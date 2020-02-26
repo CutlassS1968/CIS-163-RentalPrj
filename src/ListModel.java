@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static W20Project3GIVETOSTUDENTS.ScreenDisplay.CurrentParkStatus;
+import static ScreenDisplay.CurrentParkStatus;
 
 public class ListModel extends AbstractTableModel {
     private ArrayList<CampSite> listCampSites;
@@ -65,7 +65,7 @@ public class ListModel extends AbstractTableModel {
         }
         fireTableStructureChanged();
         }
-
+// JTABLE IS USING THESE METHODS TO DETERMINE WHERE YOU'RE DATA IS GOING
     @Override
     public String getColumnName(int col) {
         switch (display) {
