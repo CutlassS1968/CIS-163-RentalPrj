@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ScreenDisplay.CurrentParkStatus;
 
 public class ListModel extends AbstractTableModel {
     private ArrayList<CampSite> listCampSites;
@@ -25,7 +24,7 @@ public class ListModel extends AbstractTableModel {
 
     public ListModel() {
         super();
-        display = CurrentParkStatus;
+        display = ScreenDisplay.CurrentParkStatus;
         listCampSites = new ArrayList<CampSite>();
         UpdateScreen();
         createList();
