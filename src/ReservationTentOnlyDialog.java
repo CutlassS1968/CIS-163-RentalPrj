@@ -56,18 +56,15 @@ public class ReservationTentOnlyDialog extends JDialog implements ActionListener
         txtDateCheckout.setText(datetomorrow);
 
         JPanel textPanel = new JPanel();
-        textPanel.setLayout(new GridLayout(5,2));
+        textPanel.setLayout(new GridLayout(4,2));
 
-        textPanel.add(new JLabel(""));
-        textPanel.add(new JLabel(""));
-
-        textPanel.add(new JLabel("Name of Tenter: "));
+        textPanel.add(new JLabel("Name of guest: "));
         textPanel.add(txtGuestName);
-        textPanel.add(new JLabel("Date on Check in: "));
+        textPanel.add(new JLabel("Check in date: "));
         textPanel.add(txtDateCheckin);
-        textPanel.add(new JLabel("Date on Check out (est.): "));
+        textPanel.add(new JLabel("Planned check out date: "));
         textPanel.add(txtDateCheckout);
-        textPanel.add(new JLabel("Number of Tenters"));
+        textPanel.add(new JLabel("Number of tenters"));
         textPanel.add(txtNumberOfTenters);
 
         getContentPane().add(textPanel, BorderLayout.CENTER);

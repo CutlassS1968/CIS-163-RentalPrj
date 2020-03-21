@@ -13,6 +13,7 @@ public class TentOnly extends CampSite {
                   GregorianCalendar actualCheckOut, int numberOfTenters) {
     super(guestName, checkIn, estimatedCheckOut, actualCheckOut);
     this.numberOfTenters = numberOfTenters;
+    guestType = 0;
   }
 
   public int getNumberOfTenters() {

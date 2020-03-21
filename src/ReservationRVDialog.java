@@ -35,15 +35,15 @@ public class ReservationRVDialog extends JDialog implements ActionListener {
 
         setTitle("RV Reservation dialog box");
         closeStatus = CANCEL;
-        setSize(500,200);
+        setSize(400,200);
 
         // prevent user from closing window
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         // instantiate and display two text fields
         txtGuestName = new JTextField("Roger",30);
-        txtDateCheckin = new JTextField(25);
-        txtDateCheckout = new JTextField(25);
+        txtDateCheckin = new JTextField(15);
+        txtDateCheckout = new JTextField(15);
         txtPowerSupplied = new JTextField("1500", 15);
 
         Calendar currentDate = Calendar.getInstance();
@@ -58,13 +58,13 @@ public class ReservationRVDialog extends JDialog implements ActionListener {
         JPanel textPanel = new JPanel();
         textPanel.setLayout(new GridLayout(4,2));
 
-        textPanel.add(new JLabel("Name of Tenter: "));
+        textPanel.add(new JLabel("Name of Guest: "));
         textPanel.add(txtGuestName);
-        textPanel.add(new JLabel("Date on Check in: "));
+        textPanel.add(new JLabel("Check in date: "));
         textPanel.add(txtDateCheckin);
-        textPanel.add(new JLabel("Date on Check out (est.): "));
+        textPanel.add(new JLabel("Planned check out date: "));
         textPanel.add(txtDateCheckout);
-        textPanel.add(new JLabel("Power to be Supplied"));
+        textPanel.add(new JLabel("Power to be supplied: "));
         textPanel.add(txtPowerSupplied);
 
         getContentPane().add(textPanel, BorderLayout.CENTER);

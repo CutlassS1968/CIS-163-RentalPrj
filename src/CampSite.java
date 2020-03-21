@@ -25,6 +25,7 @@ public abstract class CampSite implements Serializable {
    * The name of the person that  is reserving the CampSite
    */
   protected String guestName;
+  protected int guestType;
 
   /**
    * The date the CampSite was checkIn on
@@ -50,6 +51,10 @@ public abstract class CampSite implements Serializable {
     return (int) ((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
   }
 
+  public int daysSince(Date refDate) {
+    return (int) ((estimatedCheckOut.getTime().getTime() - refDate.getTime()) / (1000 * 60 * 60 * 24));
+  }
+
   public abstract double getCost(GregorianCalendar checkOut);
 
   public String getGuestName() {
@@ -58,6 +63,14 @@ public abstract class CampSite implements Serializable {
 
   public void setGuestName(String guestName) {
     this.guestName = guestName;
+  }
+
+  public int getGuestType() {
+    return guestType;
+  }
+
+  public void setGuestType(int guestType) {
+    this.guestType = guestType;
   }
 
   public GregorianCalendar getCheckIn() {

@@ -11,6 +11,7 @@ private int power;
     public RV(String guestName, GregorianCalendar checkIn, GregorianCalendar estimatedCheckOut, GregorianCalendar actualCheckOut, int power) {
         super(guestName, checkIn, estimatedCheckOut, actualCheckOut);
         this.power = power;
+        guestType = 1;
         }
 
     public int getPower() {

@@ -1,19 +1,19 @@
 TODO Step 1:
     Change cost function for TentOnly
-        - Tents are 10 dollars, with an extra 10 dollars per day for more than 10 tenters
+        + Tents are 10 dollars, with an extra 10 dollars per day for more than 10 tenters
     Change cost function for RV
-        - RVs start at 10 dollars, with 20 dollars per day and an extra 10 dollars per day for power greater than 1000
+        + RVs start at 10 dollars, with 20 dollars per day and an extra 10 dollars per day for power greater than 1000
 TODO Step 2:
-    Add on the saving/loading the database using a text file
-    Add on the OverDue screen that sorts all the campsites based upon number of days overdue
+    - Add on the saving/loading the database using a text file
+    + Add on the OverDue screen that sorts all the campsites based upon number of days overdue
 TODO Step 3:
     Add on Sort RV tent screen
-        - This will sort RVs  first by guest name, then Tents second by name.
-        - Must use a Lambda function
+        + This will sort RVs  first by guest name, then Tents second by name.
+        + Must use a Lambda function
     Add on sort tent RV screen
-        - This will sort tents first by guest name, then RV second by guest name.
-        - If the names are the same, sort by estCheckout Date.
-        - Must use anonymous class
+        + This will sort tents first by guest name, then RV second by guest name.
+        + If the names are the same, sort by estCheckout Date.
+        + Must use anonymous class
 TODO Step 4:
     TOTALLY error checked your program (the whole program)
         For Example:
@@ -25,4 +25,6 @@ TODO Step 5:
 TODO Step 6:
     Comment all of your code, but, use the Java Style Guide on the ListModel
     - That class will be graded
+
+
 
