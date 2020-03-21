@@ -4,7 +4,7 @@ import org.junit.Test;
 public class ListModelTest {
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
     }
 
     @Test

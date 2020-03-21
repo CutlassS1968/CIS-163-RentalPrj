@@ -23,8 +23,11 @@ private int power;
 
     @Override
     public double getCost(GregorianCalendar checkOut) {
-        double cost = 10;
-        return cost;
+        if (power <= 1000) {
+          return 10 + (20 * daysBetween(checkIn.getTime(), checkOut.getTime()));
+        } else {
+          return 10 + (30 * daysBetween(checkIn.getTime(), checkOut.getTime()));
+        }
     }
 
     @Override

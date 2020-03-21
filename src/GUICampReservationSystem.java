@@ -8,7 +8,18 @@ import java.util.*;
  *  Campers Reservation System
  *
  *****************************************************************/
+
+/**
+ * The GUICampReservationSystem class is the class that displays the GUI to the user and allows
+ * the user to reserve an RV or tentOnly site, and allows the user to check out too. In addition,
+ * the GUI allows the user to save and load the database using serialized and text files.
+ */
 public class GUICampReservationSystem extends JFrame implements ActionListener{
+    // declare GUI components (menu items, buttons, etc.) needed
+    // constructor method that prepares the GUI
+    // event handlers and other methods need to build the GUIdd
+
+
     /** Holds menu bar */
     private JMenuBar menus;
 
