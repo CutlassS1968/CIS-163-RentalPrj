@@ -378,6 +378,30 @@ public class ListModel extends AbstractTableModel {
     }
   }
 
+  public void saveTextFile (String filename) {
+    try {
+      //FIXME: Save and Load
+      // - for some reason, saving the file just saves in what seems to be a serialized format
+      // and not in a basic text format. Might not want to use streams as that might be the issue
+      // . Need to figure out how to save first and then figure out how to load. Using toString
+      // might be a good idea but we'll see
+      // - All that needs to be done for save and load is right here list Model, just the two
+      // different methods. Could look into automatically saving as a .txt as well
+      FileOutputStream fos = new FileOutputStream(filename);
+      ObjectOutputStream os = new ObjectOutputStream(fos);
+      for (CampSite c:listCampSites) {
+        os.writeChars(c.getGuestName() + ", ");
+        os.writeChars(c.getGuestType() + ", ");
+        os.writeChars(c.getEstimatedCheckOut() + ", ");
+        os.writeChars(c.getActualCheckOut() + ", ");
+        os.writeChars(c.getCheckIn().getTime().toString());
+      }
+      os.close();
+    } catch (IOException ex) {
+      throw new RuntimeException("Saving problem! " + display);
+    }
+  }
+
   public void loadDatabase(String filename) {
     listCampSites.clear();
 
@@ -391,6 +415,14 @@ public class ListModel extends AbstractTableModel {
     } catch (Exception ex) {
       throw new RuntimeException("Loading problem: " + display);
 
+    }
+  }
+
+  public void loadTextFile (String filename) {
+    try {
+
+    } catch (Exception ex) {
+      throw new RuntimeException("Loading problem! " + display);
     }
   }
 

@@ -175,6 +175,8 @@ public class GUICampReservationSystem extends JFrame implements ActionListener {
         String filename = chooser.getSelectedFile().getAbsolutePath();
         if (openSerItem == comp)
           DList.loadDatabase(filename);
+        if (openTextItem == comp)
+          DList.loadTextFile(filename);
       }
     }
 
@@ -183,23 +185,25 @@ public class GUICampReservationSystem extends JFrame implements ActionListener {
       int status = chooser.showSaveDialog(null);
       if (status == JFileChooser.APPROVE_OPTION) {
         String filename = chooser.getSelectedFile().getAbsolutePath();
-        if (saveSerItem == e.getSource())
+        if (saveSerItem == comp)
           DList.saveDatabase(filename);
+        if (saveTextItem == comp)
+          DList.saveTextFile(filename);
       }
     }
 
     //MenuBar options
-    if (e.getSource() == exitItem) {
+    if (comp == exitItem) {
       System.exit(1);
     }
-    if (e.getSource() == reserveRVItem) {
+    if (comp == reserveRVItem) {
       RV RV = new RV();
       ReservationRVDialog dialog = new ReservationRVDialog(this, RV);
       if (dialog.getCloseStatus() == ReservationRVDialog.OK) {
         DList.add(RV);
       }
     }
-    if (e.getSource() == reserveTentOnlyItem) {
+    if (comp == reserveTentOnlyItem) {
       TentOnly tentOnly = new TentOnly();
       ReservationTentOnlyDialog dialog = new ReservationTentOnlyDialog(this, tentOnly);
       if (dialog.getCloseStatus() == ReservationTentOnlyDialog.OK) {
@@ -207,7 +211,7 @@ public class GUICampReservationSystem extends JFrame implements ActionListener {
       }
     }
 
-    if (checkOutItem == e.getSource()) {
+    if (checkOutItem == comp) {
       int index = jTable.getSelectedRow();
       if (index != -1) {
         GregorianCalendar dat = new GregorianCalendar();
