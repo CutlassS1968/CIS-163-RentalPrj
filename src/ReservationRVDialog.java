@@ -50,10 +50,10 @@ public class ReservationRVDialog extends JDialog implements ActionListener {
         SimpleDateFormat formatter= new SimpleDateFormat("MM/dd/yyyy"); //format it as per your requirement
         String dateNow = formatter.format(currentDate.getTime());
         currentDate.add(Calendar.DATE, 1);
-        String datetomorrow = formatter.format(currentDate.getTime());
+        String dateTomorrow = formatter.format(currentDate.getTime());
 
         txtDateCheckin.setText(dateNow);
-        txtDateCheckout.setText(datetomorrow);
+        txtDateCheckout.setText(dateTomorrow);
 
         JPanel textPanel = new JPanel();
         textPanel.setLayout(new GridLayout(4,2));

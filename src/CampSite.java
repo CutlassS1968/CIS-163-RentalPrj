@@ -55,6 +55,8 @@ public abstract class CampSite implements Serializable {
     return (int) ((estimatedCheckOut.getTime().getTime() - refDate.getTime()) / (1000 * 60 * 60 * 24));
   }
 
+  // TODO: Format getCost decimal place to look like proper currency, IE "$72430.00" not "72430.0"
+
   public abstract double getCost(GregorianCalendar checkOut);
 
   public String getGuestName() {

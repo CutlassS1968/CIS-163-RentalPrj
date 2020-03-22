@@ -76,7 +76,6 @@ public class OverDueReferenceDialog extends JDialog implements ActionListener {
 //        ListModel.setRefDate(refDate);
 
       } catch (ParseException e1) {
-        // TODO: default to current date when incorrect date;
       }
 
     }

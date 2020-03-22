@@ -1,5 +1,6 @@
 import javax.swing.table.AbstractTableModel;
 import java.io.*;
+import java.sql.Array;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -380,26 +381,49 @@ public class ListModel extends AbstractTableModel {
 
   public void saveTextFile (String filename) {
     try {
-      //FIXME: Save and Load
-      // - for some reason, saving the file just saves in what seems to be a serialized format
-      // and not in a basic text format. Might not want to use streams as that might be the issue
-      // . Need to figure out how to save first and then figure out how to load. Using toString
-      // might be a good idea but we'll see
-      // - All that needs to be done for save and load is right here list Model, just the two
-      // different methods. Could look into automatically saving as a .txt as well
-      FileOutputStream fos = new FileOutputStream(filename);
-      ObjectOutputStream os = new ObjectOutputStream(fos);
-      for (CampSite c:listCampSites) {
-        os.writeChars(c.getGuestName() + ", ");
-        os.writeChars(c.getGuestType() + ", ");
-        os.writeChars(c.getEstimatedCheckOut() + ", ");
-        os.writeChars(c.getActualCheckOut() + ", ");
-        os.writeChars(c.getCheckIn().getTime().toString());
+
+      FileOutputStream file = new FileOutputStream(filename);
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(file));
+
+      for (int i = 0; i < listCampSites.size(); ++i) {
+        writer.write(listCampSites.get(i).getGuestType() + ", ");
+        writer.write(listCampSites.get(i).getGuestName() + ", ");
+
+        writer.write(listCampSites.get(i).getCheckIn().get(Calendar.MONTH) + "/" +
+            listCampSites.get(i).getCheckIn().get(Calendar.DAY_OF_MONTH) + "/" +
+            listCampSites.get(i).getCheckIn().get(Calendar.YEAR) + ", ");
+
+        writer.write(listCampSites.get(i).getEstimatedCheckOut().get(Calendar.MONTH) + "/" +
+            listCampSites.get(i).getEstimatedCheckOut().get(Calendar.DAY_OF_MONTH) + "/" +
+            listCampSites.get(i).getEstimatedCheckOut().get(Calendar.YEAR) + ", ");
+
+        if (listCampSites.get(i).getActualCheckOut() != null) {
+          writer.write(listCampSites.get(i).getActualCheckOut().get(Calendar.MONTH) + "/" +
+              listCampSites.get(i).getActualCheckOut().get(Calendar.DAY_OF_MONTH) + "/" +
+              listCampSites.get(i).getActualCheckOut().get(Calendar.YEAR) + ", ");
+        } else {
+          writer.write(listCampSites.get(i).getActualCheckOut() + ", ");
+        }
+
+        if (listCampSites.get(i).getGuestType() == 0) {
+          TentOnly t = (TentOnly) listCampSites.get(i);
+          writer.write(t.getNumberOfTenters() + "");
+        }
+
+        if (listCampSites.get(i).getGuestType() == 1) {
+          RV r = (RV) listCampSites.get(i);
+          writer.write(r.getPower() + "");
+        }
+
+        writer.newLine();
       }
-      os.close();
+      writer.close();
+      file.close();
+
     } catch (IOException ex) {
       throw new RuntimeException("Saving problem! " + display);
     }
+
   }
 
   public void loadDatabase(String filename) {
@@ -419,8 +443,104 @@ public class ListModel extends AbstractTableModel {
   }
 
   public void loadTextFile (String filename) {
+    String line = null;
+
+    String[] lineArray;
+    String[] checkInArray;
+    String[] estCheckOutArray;
+    String[] checkOutArray;
+
+    listCampSites.clear();
+
     try {
 
+      FileReader file = new FileReader(filename);
+      BufferedReader reader = new BufferedReader(file);
+
+      while ((line = reader.readLine()) != null) {
+        lineArray = line.split(", ");
+
+        checkInArray = lineArray[2].split("/");
+        estCheckOutArray = lineArray[3].split("/");
+        checkOutArray = lineArray[4].split("/");
+
+          if (Integer.parseInt(lineArray[0]) == 0) {    // IF TENTONLY
+            TentOnly temp = new TentOnly();
+
+            temp.setGuestType(Integer.parseInt(lineArray[0])); // Guest Type
+
+            temp.setGuestName(lineArray[1]); // Guest Name
+
+            temp.setCheckIn(new GregorianCalendar( // Check In
+                Integer.parseInt(checkInArray[2]),
+                Integer.parseInt(checkInArray[0]),
+                Integer.parseInt(checkInArray[1])
+            ));
+
+
+            temp.setEstimatedCheckOut(new GregorianCalendar( // Est Check Out
+                Integer.parseInt(estCheckOutArray[2]),
+                Integer.parseInt(estCheckOutArray[0]),
+                Integer.parseInt(estCheckOutArray[1])
+            ));
+
+            if (lineArray[4].contains("null")) {
+              temp.setActualCheckOut(null);
+            } else {
+              temp.setEstimatedCheckOut(new GregorianCalendar( // Check Out
+                  Integer.parseInt(checkOutArray[2]),
+                  Integer.parseInt(checkOutArray[0]),
+                  Integer.parseInt(checkOutArray[1])
+              ));
+            }
+
+            temp.setNumberOfTenters(Integer.parseInt(lineArray[5]));  // Tenters
+
+            add(temp);
+          }
+
+          if (Integer.parseInt(lineArray[0]) == 1) {    // IF RV
+            RV temp = new RV();
+
+
+            temp.setGuestType(Integer.parseInt(lineArray[0])); // Guest Type
+
+            temp.setGuestName(lineArray[1]); // Guest Name
+
+            temp.setCheckIn(new GregorianCalendar( // Check In
+                Integer.parseInt(checkInArray[2]),
+                Integer.parseInt(checkInArray[0]),
+                Integer.parseInt(checkInArray[1])
+            ));
+
+
+            temp.setEstimatedCheckOut(new GregorianCalendar( // Est Check Out
+                Integer.parseInt(estCheckOutArray[2]),
+                Integer.parseInt(estCheckOutArray[0]),
+                Integer.parseInt(estCheckOutArray[1])
+            ));
+
+            if (lineArray[4].contains("null")) {
+              temp.setActualCheckOut(null);
+            } else {
+              temp.setEstimatedCheckOut(new GregorianCalendar( // Check Out
+                  Integer.parseInt(checkOutArray[2]),
+                  Integer.parseInt(checkOutArray[0]),
+                  Integer.parseInt(checkOutArray[1])
+              ));
+            }
+
+            temp.setPower(Integer.parseInt(lineArray[5]));
+
+            add(temp);
+          }
+        }
+
+      UpdateScreen();
+      reader.close();
+
+    } catch (FileNotFoundException ex) {
+      throw new RuntimeException("Error reading file! " + display);
     } catch (Exception ex) {
       throw new RuntimeException("Loading problem! " + display);
     }

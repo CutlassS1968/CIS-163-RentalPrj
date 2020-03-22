@@ -7,6 +7,7 @@ public class TentOnly extends CampSite {
   private int numberOfTenters;
 
   public TentOnly() {
+    guestType = 0;
   }
 
   public TentOnly(String guestName, GregorianCalendar checkIn, GregorianCalendar estimatedCheckOut,

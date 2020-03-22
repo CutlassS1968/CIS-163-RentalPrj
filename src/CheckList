@@ -4,7 +4,7 @@ TODO Step 1:
     Change cost function for RV
         + RVs start at 10 dollars, with 20 dollars per day and an extra 10 dollars per day for power greater than 1000
 TODO Step 2:
-    - Add on the saving/loading the database using a text file
+    + Add on the saving/loading the database using a text file
     + Add on the OverDue screen that sorts all the campsites based upon number of days overdue
 TODO Step 3:
     Add on Sort RV tent screen

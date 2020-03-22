@@ -197,17 +197,17 @@ public class GUICampReservationSystem extends JFrame implements ActionListener {
       System.exit(1);
     }
     if (comp == reserveRVItem) {
-      RV RV = new RV();
-      ReservationRVDialog dialog = new ReservationRVDialog(this, RV);
+      RV rv = new RV();
+      ReservationRVDialog dialog = new ReservationRVDialog(this, rv);
       if (dialog.getCloseStatus() == ReservationRVDialog.OK) {
-        DList.add(RV);
+        DList.add(rv);
       }
     }
     if (comp == reserveTentOnlyItem) {
-      TentOnly tentOnly = new TentOnly();
-      ReservationTentOnlyDialog dialog = new ReservationTentOnlyDialog(this, tentOnly);
+      TentOnly tent = new TentOnly();
+      ReservationTentOnlyDialog dialog = new ReservationTentOnlyDialog(this, tent);
       if (dialog.getCloseStatus() == ReservationTentOnlyDialog.OK) {
-        DList.add(tentOnly);
+        DList.add(tent);
       }
     }
 

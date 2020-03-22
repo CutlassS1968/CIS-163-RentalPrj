@@ -6,6 +6,7 @@ public class RV extends CampSite {
 private int power;
 
     public RV() {
+      guestType = 1;
     }
 
     public RV(String guestName, GregorianCalendar checkIn, GregorianCalendar estimatedCheckOut, GregorianCalendar actualCheckOut, int power) {
