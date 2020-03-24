@@ -3,33 +3,31 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-/*****************************************************************
+/**********************************************************************************************
  *
- *  Campers Reservation System
- *
- *****************************************************************/
-
-/**
  * The GUICampReservationSystem class is the class that displays the GUI to the user and allows
  * the user to reserve an RV or tentOnly site, and allows the user to check out too. In addition,
  * the GUI allows the user to save and load the database using serialized and text files.
- */
+ *
+ * @author Evan Johns
+ * @author Austin Ackerman
+ * @version 03/23/2020
+ *
+ **********************************************************************************************/
 public class GUICampReservationSystem extends JFrame implements ActionListener {
-  // declare GUI components (menu items, buttons, etc.) needed
-  // constructor method that prepares the GUI
-  // event handlers and other methods need to build the GUIdd
-
 
   /**
    * Holds menu bar
    */
   private JMenuBar menus;
 
+
   /**
    * menus in the menu bar
    */
   private JMenu fileMenu;
   private JMenu actionMenu;
+
 
   /**
    * menu items in each of the menus
@@ -51,26 +49,30 @@ public class GUICampReservationSystem extends JFrame implements ActionListener {
 
   private JPanel panel;
 
+
   /**
    * Holds the list engine
    */
   private ListModel DList;
+
 
   /**
    * Holds jTable
    */
   private JTable jTable;
 
+
   /**
    * Scroll pane
    */
   private JScrollPane scrollList;
 
-  /*****************************************************************
+
+  /*********************************************************************************************
    *
-   * A constructor that starts a new GUI1024 for the rental store
+   * A constructor that starts a new GUI for the CampSite Database
    *
-   *****************************************************************/
+   *********************************************************************************************/
   public GUICampReservationSystem() {
     //adding menu bar and menu items
     menus = new JMenuBar();

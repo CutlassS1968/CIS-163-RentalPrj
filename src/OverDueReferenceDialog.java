@@ -2,29 +2,61 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
+/**********************************************************************************************
+ *
+ * OverDueReferenceDialog is the dialog box that shows up when you select "Over Due"
+ *
+ * @author Evan Johns
+ * @author Austin Ackerman
+ * @version 03/23/2020
+ *
+ **********************************************************************************************/
 public class OverDueReferenceDialog extends JDialog implements ActionListener {
 
+  /**
+   * GUI elements
+   */
   private JTextField dateField;
-
   private JButton okButton;
   private JButton cancelButton;
-  private int closeStatus;
+
+
+  /**
+   * User's over due date reference
+   */
   private Date refDate;
+
+
+  /**
+   * Date Format for parsing dates
+   */
   private SimpleDateFormat dateFormat;
 
+
+  /**
+   * Current status of the dialog box
+   */
+  private int closeStatus;
   static final int OK = 0;
   static final int CANCEL = 1;
 
+
+  /*********************************************************************************************
+   *
+   * Instantiate a custom dialog box as 'modal' and wait for the use to provide an input
+   *
+   * @param parent reference to JFrame parent of the dialog box
+   * @param modal controls whether you can manipulate the parent frame
+   *
+   *********************************************************************************************/
   public OverDueReferenceDialog(JFrame parent, Boolean modal) {
     // call parent and create a 'modal' dialog
-    super(parent, true);
+    super(parent, modal);
 
     setTitle("Input");
     closeStatus = CANCEL;
@@ -37,7 +69,6 @@ public class OverDueReferenceDialog extends JDialog implements ActionListener {
     JPanel textPanel = new JPanel();
     textPanel.setLayout(new GridLayout(1, 2));
     textPanel.add(new JLabel("Enter Date (Default is current date) :"));
-//    textPanel.add(new JLabel("(Default is current date)"));
 
     JPanel datePanel = new JPanel();
     dateField = new JTextField(15);
@@ -60,10 +91,13 @@ public class OverDueReferenceDialog extends JDialog implements ActionListener {
     setVisible(true);
   }
 
-  /**************************************************************
-   Respond to either button clicks
-   @param e the action event that was just fired
-   **************************************************************/
+  /*********************************************************************************************
+   *
+   * Activate a response to either button presses
+   *
+   * @param e the action even that was just activated
+   *
+   *********************************************************************************************/
   public void actionPerformed(ActionEvent e) {
 
     JButton button = (JButton) e.getSource();
@@ -90,15 +124,8 @@ public class OverDueReferenceDialog extends JDialog implements ActionListener {
     return refDate;
   }
 
-  /**************************************************************
-   Return a String to let the caller know which button
-   was clicked
-
-   @return an int representing the option OK or CANCEL
-   **************************************************************/
   public int getCloseStatus() {
     return closeStatus;
   }
-
 }
 

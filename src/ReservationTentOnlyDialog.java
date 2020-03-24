@@ -8,26 +8,47 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+/**********************************************************************************************
+ *
+ * ReservationTentOnlyDialog is the dialog box that shows up when you select "Reserve Tent"
+ *
+ * @author Evan Johns
+ * @author Austin Ackerman
+ * @version 03/23/2020
+ *
+ **********************************************************************************************/
 public class ReservationTentOnlyDialog extends JDialog implements ActionListener {
+  /**
+   * GUI elements
+   */
   private JTextField txtGuestName;
-  private JTextField txtDateCheckin;
+  private JTextField txtDateCheckIn;
   private JTextField txtDateCheckout;
   private JTextField txtNumberOfTenters;
   private JButton okButton;
   private JButton cancelButton;
-  private int closeStatus;
+
+  /**
+   * CampSite selected in the GUI
+   */
   private TentOnly tentOnly;
+
+  /**
+   * current status of the dialog box
+   */
+  private int closeStatus;
   public static final int OK = 0;
   public static final int CANCEL = 1;
 
-  /*********************************************************
-   Instantiate a Custom Dialog as 'modal' and wait for the
-   user to provide data and click on a button.
 
-   @param parent reference to the JFrame application
-   @param tentOnly an instantiated object to be filled with data
-   *********************************************************/
-
+  /*********************************************************************************************
+   *
+   * Instantiate a custom dialog box as 'modal' and wait for the use to provide an input
+   *
+   * @param parent reference to JFrame parent of the dialog box
+   * @param tentOnly the CampSite being booked
+   *
+   *********************************************************************************************/
   public ReservationTentOnlyDialog(JFrame parent, TentOnly tentOnly) {
     // call parent and create a 'modal' dialog
     super(parent, true);
@@ -42,7 +63,7 @@ public class ReservationTentOnlyDialog extends JDialog implements ActionListener
 
     // instantiate and display two text fields
     txtGuestName = new JTextField("Judy", 30);
-    txtDateCheckin = new JTextField(15);
+    txtDateCheckIn = new JTextField(15);
     txtDateCheckout = new JTextField(15);
     txtNumberOfTenters = new JTextField("4", 15);
 
@@ -52,7 +73,7 @@ public class ReservationTentOnlyDialog extends JDialog implements ActionListener
     currentDate.add(Calendar.DATE, 1);
     String datetomorrow = formatter.format(currentDate.getTime());
 
-    txtDateCheckin.setText(dateNow);
+    txtDateCheckIn.setText(dateNow);
     txtDateCheckout.setText(datetomorrow);
 
     JPanel textPanel = new JPanel();
@@ -61,7 +82,7 @@ public class ReservationTentOnlyDialog extends JDialog implements ActionListener
     textPanel.add(new JLabel("Name of guest: "));
     textPanel.add(txtGuestName);
     textPanel.add(new JLabel("Check in date: "));
-    textPanel.add(txtDateCheckin);
+    textPanel.add(txtDateCheckIn);
     textPanel.add(new JLabel("Planned check out date: "));
     textPanel.add(txtDateCheckout);
     textPanel.add(new JLabel("Number of tenters"));
@@ -82,10 +103,13 @@ public class ReservationTentOnlyDialog extends JDialog implements ActionListener
     setVisible(true);
   }
 
-  /**************************************************************
-   Respond to either button clicks
-   @param e the action event that was just fired
-   **************************************************************/
+  /*********************************************************************************************
+   *
+   * Activate a response to either button presses
+   *
+   * @param e the action even that was just activated
+   *
+   *********************************************************************************************/
   public void actionPerformed(ActionEvent e) {
 
     JButton button = (JButton) e.getSource();
@@ -100,7 +124,7 @@ public class ReservationTentOnlyDialog extends JDialog implements ActionListener
       Date d2 = null;
       try {
         GregorianCalendar gregTemp = new GregorianCalendar();
-        d1 = df.parse(txtDateCheckin.getText());
+        d1 = df.parse(txtDateCheckIn.getText());
         gregTemp.setTime(d1);
         tentOnly.setCheckIn(gregTemp);
 
@@ -121,12 +145,6 @@ public class ReservationTentOnlyDialog extends JDialog implements ActionListener
     dispose();
   }
 
-  /**************************************************************
-   Return a String to let the caller know which button
-   was clicked
-
-   @return an int representing the option OK or CANCEL
-   **************************************************************/
   public int getCloseStatus() {
     return closeStatus;
   }

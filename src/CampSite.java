@@ -4,41 +4,42 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+/**********************************************************************************************
+ *
+ * CampSite is the base form of all possible locations in the database
+ *
+ * @author Evan Johns
+ * @author Austin Ackerman
+ * @version 03/23/2020
+ *
+ **********************************************************************************************/
 public abstract class CampSite implements Serializable {
-  // What is the purpose of this variable (search Google)
   private static final long serialVersionUID = 1L;
-  /**
-   * "Java serialization is the process of converting an object into a stream of bytes so we can
-   * do stuff like store it on disk or send it over the network. Deserialization is the reverse
-   * process - converting a stream of bytes into an object in memory.
-   *
-   *      During serialization, java runtime associates a version number with each
-   * serializable class. This number is called serialVersionUID, whis is used during
-   * deserialization to verify that the sender and receiver of a serialized object have loaded
-   * classes for that object that are compatible with respect to serialization. If the receiver
-   * has loaded a class for the object that has a different serialVersionUID than that of the
-   * corresponding sender's class, then deserialization will result in an InvalidClassException"
-   *  - How To Do In Java
-   */
 
   /**
-   * The name of the person that  is reserving the CampSite
+   * Guest's name for the reservation
    */
   protected String guestName;
-  protected int guestType;
+
 
   /**
-   * The date the CampSite was checkIn on
+   * The type of Camp Site it is
+   */
+  protected int guestType;
+
+
+  /**
+   * All important dates that pertain to the CampSite
    */
   protected GregorianCalendar checkIn;
   protected GregorianCalendar estimatedCheckOut;
   protected GregorianCalendar actualCheckOut;
 
-  public CampSite() {
-  }
 
-  public CampSite(String guestName,
-                  GregorianCalendar checkIn,
+  /*********************************************************************************************
+   * General CampSite Constructor
+   *********************************************************************************************/
+  public CampSite(String guestName, GregorianCalendar checkIn,
                   GregorianCalendar estimatedCheckOut,
                   GregorianCalendar actualCheckOut) {
     this.guestName = guestName;
@@ -47,15 +48,20 @@ public abstract class CampSite implements Serializable {
     this.actualCheckOut = actualCheckOut;
   }
 
+  /*********************************************************************************************
+   * Default CampSite Constructor
+   *********************************************************************************************/
+  public CampSite() {
+  }
+
   public int daysBetween(Date d1, Date d2) {
     return (int) ((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
   }
 
   public int daysSince(Date refDate) {
-    return (int) ((estimatedCheckOut.getTime().getTime() - refDate.getTime()) / (1000 * 60 * 60 * 24));
+    return (int) ((estimatedCheckOut.getTime().getTime() - refDate.getTime()) /
+        (1000 * 60 * 60 * 24));
   }
-
-  // TODO: Format getCost decimal place to look like proper currency, IE "$72430.00" not "72430.0"
 
   public abstract double getCost(GregorianCalendar checkOut);
 
@@ -99,8 +105,7 @@ public abstract class CampSite implements Serializable {
     this.actualCheckOut = actualCheckOut;
   }
 
-  // following code used for debugging only
-  // IntelliJ using the toString for displaying in debugger.
+  // Code used by the debugger
   @Override
   public String toString() {
     DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");

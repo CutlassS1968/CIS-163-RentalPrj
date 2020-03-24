@@ -229,7 +229,7 @@ public class ListModelTest {
   public void currentParkScreenEstimatedCheckOutNull() {
     ListModel list = new ListModel();
 
-    GregorianCalendar g1 = new GregorianCalendar(2020, 2,20);
+    GregorianCalendar g1 = new GregorianCalendar(2020, 2, 20);
 
     list.add(new TentOnly("ABC", g1, null, null, 10));
 
@@ -240,7 +240,7 @@ public class ListModelTest {
 
   @Test
   public void checkOutScreenCost() {
-    ListModel list  = new ListModel();
+    ListModel list = new ListModel();
     list.setDisplay(ScreenDisplay.CheckOutGuest);
 
     assertEquals(list.getValueAt(0, 4), 72430.0);
@@ -249,18 +249,17 @@ public class ListModelTest {
   @Test
   public void overDueScreenLooseEnds() {
     ListModel list = new ListModel();
-    list.setRefDate(new GregorianCalendar(2000,1,29).getTime());
+    list.setRefDate(new GregorianCalendar(2000, 1, 29).getTime());
     list.setDisplay(ScreenDisplay.OverDueGuest);
 
 
-
     assertEquals(list.getValueAt(0, 0), "T2");
-    System.out.println(list.getValueAt(0,3));
+    System.out.println(list.getValueAt(0, 3));
     assertEquals(list.getValueAt(0, 3), -7234);
 
-    list.setRefDate(new GregorianCalendar(2021,1,29).getTime());
+    list.setRefDate(new GregorianCalendar(2021, 1, 29).getTime());
 
-    assertEquals(list.getValueAt(0, 3),437);
+    assertEquals(list.getValueAt(0, 3), 437);
   }
 
   @Test
@@ -642,7 +641,7 @@ public class ListModelTest {
     list.loadTextFile("haha_ive_fooled_you_now.txt");
   }
 
-  @Test (expected = Exception.class)
+  @Test(expected = Exception.class)
   public void loadTextFileFileNotFoundError() {
     ListModel list = new ListModel();
     list.loadTextFile("fakestuff");

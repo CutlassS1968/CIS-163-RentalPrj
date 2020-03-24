@@ -6,12 +6,36 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**********************************************************************************************
+ *
+ * ListModel contains the core calculations, sorting, organization,
+ * and displaying of campsites in the CampSite database
+ *
+ * @author Evan Johns
+ * @author Austin Ackerman
+ * @version 03/23/2020
+ *
+ **********************************************************************************************/
+
 public class ListModel extends AbstractTableModel {
+
+
+  /**
+   * lists used for organizing camp sites
+   */
   private ArrayList<CampSite> listCampSites;
   private ArrayList<CampSite> filteredListCampSites;
 
+
+  /**
+   * current display active
+   */
   private ScreenDisplay display;
 
+
+  /**
+   * Column names for all displays
+   */
   private String[] columnNamesForCurrentPark = {"Guest Name", "Est. Cost",
       "Check In Date", "Est. Check Out Date", "Max Power", "Num. of Tenters"};
 
@@ -25,12 +49,30 @@ public class ListModel extends AbstractTableModel {
 
   private String[] columnNamesForTentRv = columnNamesForCurrentPark;
 
+
+  /**
+   * Date formatter for quick formatting of dates
+   */
   private DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 
+
+  /**
+   * User Input reference date used for calculating days overdue
+   */
   private Date refDate;
 
+
+  /**
+   * Emergency break, use only in emergencies (testing)
+   */
   private Boolean eBreak;
 
+
+  /*********************************************************************************************
+   *
+   * Instantiates ListModel's instance variables
+   *
+   *********************************************************************************************/
   public ListModel() {
     super();
     display = ScreenDisplay.CurrentParkStatus;
@@ -40,90 +82,6 @@ public class ListModel extends AbstractTableModel {
     createList();
   }
 
-  public void setDisplay(ScreenDisplay selected) {
-    display = selected;
-    UpdateScreen();
-  }
-
-  private void UpdateScreen() {
-    switch (display) {
-      case CurrentParkStatus:
-        filteredListCampSites = (ArrayList<CampSite>) listCampSites.stream().
-            filter(n -> n.actualCheckOut == null).collect(Collectors.toList());
-
-        // Note: This uses Lambda function
-        Collections.sort(filteredListCampSites, (n1, n2) -> n1.getGuestName().compareTo(n2.guestName));
-        break;
-
-      case CheckOutGuest:
-        filteredListCampSites = (ArrayList<CampSite>) listCampSites.stream().
-            filter(n -> n.getActualCheckOut() != null).collect(Collectors.toList());
-
-        // Note: This uses an anonymous class.
-        Collections.sort(filteredListCampSites, new Comparator<CampSite>() {
-          @Override
-          public int compare(CampSite n1, CampSite n2) {
-            return n1.getGuestName().compareTo(n2.guestName);
-          }
-        });
-
-        break;
-
-      case OverDueGuest:
-        filteredListCampSites = (ArrayList<CampSite>) listCampSites.stream().
-            filter(n -> n.actualCheckOut == null).collect(Collectors.toList());
-
-        Collections.sort(filteredListCampSites,
-            (n1, n2) -> n1.getEstimatedCheckOut().compareTo(n2.getEstimatedCheckOut()));
-
-        break;
-
-      case RvTent:
-        filteredListCampSites = (ArrayList<CampSite>) listCampSites.stream().
-            filter(n -> n.actualCheckOut == null).collect(Collectors.toList());
-
-//         Alternatively you could use streams to sort the function, which is much easier than
-//         using lambdas or anonymous functions
-//
-//         filteredListCampSites.stream().sorted(Comparator.comparing(CampSite::getGuestType)
-//         .thenComparing(CampSite::getGuestName));
-
-        Collections.sort(filteredListCampSites,
-            (n1, n2) -> {
-              if (n1.getGuestType() != 1 && n2.getGuestType() != 1)
-                return Integer.toString(n1.getGuestType()).compareTo(Integer.toString(n2.getGuestType()));
-              else
-                return n1.getGuestName().compareTo(n2.getGuestName());
-            });
-        break;
-
-      case TentRv:
-        filteredListCampSites = (ArrayList<CampSite>) listCampSites.stream().
-            filter(n -> n.actualCheckOut == null).collect(Collectors.toList());
-
-        Collections.sort(filteredListCampSites, new Comparator<CampSite>() {
-          @Override
-          public int compare(CampSite n1, CampSite n2) {
-            if (n1.getGuestType() == 0 && n2.getGuestType() == 0) {
-              if (n1.getGuestName().compareTo(n2.getGuestName()) == 0) {
-                return n1.getEstimatedCheckOut().compareTo(n2.getEstimatedCheckOut());
-              }
-              return n1.getGuestName().compareTo(n2.getGuestName());
-            } else {
-              return Integer.toString(n1.getGuestType()).compareTo(Integer.toString(n2.getGuestType()));
-            }
-          }
-        });
-
-        break;
-
-      default:
-        throw new RuntimeException("upDate is in undefined state: " + display);
-    }
-    fireTableStructureChanged();
-  }
-
-  // JTABLE IS USING THESE METHODS TO DETERMINE WHERE YOU'RE DATA IS GOING
   @Override
   public String getColumnName(int col) {
     switch (display) {
@@ -180,6 +138,99 @@ public class ListModel extends AbstractTableModel {
     throw new RuntimeException("Undefined state for Display: " + display);
   }
 
+  public void setDisplay(ScreenDisplay selected) {
+    display = selected;
+    UpdateScreen();
+  }
+
+  /**
+   * Updates screen based on the current display status that is set in GUICampReservationSystem
+   * .java and sorts the list of Camp Sites based on the current display
+   */
+  private void UpdateScreen() {
+    switch (display) {
+      case CurrentParkStatus: // Organizes by Guest name
+        filteredListCampSites = (ArrayList<CampSite>) listCampSites.stream().
+            filter(n -> n.actualCheckOut == null).collect(Collectors.toList());
+
+        Collections.sort(filteredListCampSites, (n1, n2) -> n1.getGuestName().compareTo(n2.guestName));
+        break;
+
+      case CheckOutGuest: // Organizes by Guest name
+        filteredListCampSites = (ArrayList<CampSite>) listCampSites.stream().
+            filter(n -> n.getActualCheckOut() != null).collect(Collectors.toList());
+
+        Collections.sort(filteredListCampSites, new Comparator<CampSite>() {
+          @Override
+          public int compare(CampSite n1, CampSite n2) {
+            return n1.getGuestName().compareTo(n2.guestName);
+          }
+        });
+
+        break;
+
+      case OverDueGuest:  // Organizes by Estimated Cost
+        filteredListCampSites = (ArrayList<CampSite>) listCampSites.stream().
+            filter(n -> n.actualCheckOut == null).collect(Collectors.toList());
+
+        Collections.sort(filteredListCampSites,
+            (n1, n2) -> n1.getEstimatedCheckOut().compareTo(n2.getEstimatedCheckOut()));
+
+        break;
+
+      case RvTent:  // Organizes first by Rv>Tent and then by Guest name
+        filteredListCampSites = (ArrayList<CampSite>) listCampSites.stream().
+            filter(n -> n.actualCheckOut == null).collect(Collectors.toList());
+
+//         Alternatively you could use streams to sort the function, which is much easier than
+//         using lambdas or anonymous functions
+//
+//         filteredListCampSites.stream().sorted(Comparator.comparing(CampSite::getGuestType)
+//         .thenComparing(CampSite::getGuestName));
+
+        Collections.sort(filteredListCampSites,
+            (n1, n2) -> {
+              if (n1.getGuestType() != 1 && n2.getGuestType() != 1) {
+                return Integer.toString(n1.getGuestType()).compareTo(Integer.toString(n2.getGuestType()));
+              } else {
+                return n1.getGuestName().compareTo(n2.getGuestName());
+              }
+            });
+        break;
+
+      case TentRv:  // Organizes first by Tent>Rv and then by Guest name
+        filteredListCampSites = (ArrayList<CampSite>) listCampSites.stream().
+            filter(n -> n.actualCheckOut == null).collect(Collectors.toList());
+
+        Collections.sort(filteredListCampSites, new Comparator<CampSite>() {
+          @Override
+          public int compare(CampSite n1, CampSite n2) {
+            if (n1.getGuestType() == 0 && n2.getGuestType() == 0) {
+              if (n1.getGuestName().compareTo(n2.getGuestName()) == 0) {
+                return n1.getEstimatedCheckOut().compareTo(n2.getEstimatedCheckOut());
+              }
+              return n1.getGuestName().compareTo(n2.getGuestName());
+            } else {
+              return Integer.toString(n1.getGuestType()).compareTo(Integer.toString(n2.getGuestType()));
+            }
+          }
+        });
+
+        break;
+
+      default:
+        throw new RuntimeException("upDate is in undefined state: " + display);
+    }
+    fireTableStructureChanged();
+  }
+
+  /**
+   * Returns the value in the table at a given row and column for the Current Park Screen
+   *
+   * @param row Row in table
+   * @param col Column in table
+   * @return returns the object at that index
+   */
   private Object currentParkScreen(int row, int col) {
     switch (col) {
       case 0:
@@ -193,32 +244,41 @@ public class ListModel extends AbstractTableModel {
         return (formatter.format(filteredListCampSites.get(row).checkIn.getTime()));
 
       case 3:
-        if (filteredListCampSites.get(row).estimatedCheckOut == null)
+        if (filteredListCampSites.get(row).estimatedCheckOut == null) {
           return "-";
+        }
 
         return (formatter.format(filteredListCampSites.get(row).estimatedCheckOut.
             getTime()));
 
       case 4:
       case 5:
-        if (filteredListCampSites.get(row) instanceof RV)
-          if (col == 4)
+        if (filteredListCampSites.get(row) instanceof RV) {
+          if (col == 4) {
             return (((RV) filteredListCampSites.get(row)).getPower());
-          else
+          } else {
             return "";
-
-        else {
-          if (col == 5)
+          }
+        } else {
+          if (col == 5) {
             return (((TentOnly) filteredListCampSites.get(row)).
                 getNumberOfTenters());
-          else
+          } else {
             return "";
+          }
         }
       default:
         throw new RuntimeException("Row,col out of range: " + row + " " + col);
     }
   }
 
+  /**
+   * Returns the value in the table at a given row and column for the Check Out Screen
+   *
+   * @param row Row in table
+   * @param col Column in table
+   * @return returns the object at that index
+   */
   private Object checkOutScreen(int row, int col) {
     switch (col) {
       case 0:
@@ -247,6 +307,13 @@ public class ListModel extends AbstractTableModel {
     }
   }
 
+  /**
+   * Returns the value in the table at a given row and column for the Over Due Screen
+   *
+   * @param row Row in table
+   * @param col Column in table
+   * @return returns the object at that index
+   */
   private Object overDueScreen(int row, int col) {
     switch (col) {
       case 0:
@@ -257,16 +324,18 @@ public class ListModel extends AbstractTableModel {
             get(row).estimatedCheckOut));
 
       case 2:
-        if (filteredListCampSites.get(row).estimatedCheckOut == null)
+        if (filteredListCampSites.get(row).estimatedCheckOut == null) {
           return "-";
+        }
 
         return (formatter.format(filteredListCampSites.get(row).estimatedCheckOut.
             getTime()));
 
 
       case 3:
-        if (filteredListCampSites.get(row).daysSince(refDate) != 0)
+        if (filteredListCampSites.get(row).daysSince(refDate) != 0) {
           return filteredListCampSites.get(row).daysSince(refDate) * -1;
+        }
         return filteredListCampSites.get(row).daysSince(refDate);
 
       default:
@@ -274,6 +343,13 @@ public class ListModel extends AbstractTableModel {
     }
   }
 
+  /**
+   * Returns the value in the table at a given row and column for the RvTent Screen
+   *
+   * @param row Row in table
+   * @param col Column in table
+   * @return returns the object at that index
+   */
   private Object rvTentScreen(int row, int col) {
     switch (col) {
       case 0:
@@ -287,32 +363,41 @@ public class ListModel extends AbstractTableModel {
         return (formatter.format(filteredListCampSites.get(row).checkIn.getTime()));
 
       case 3:
-        if (filteredListCampSites.get(row).estimatedCheckOut == null)
+        if (filteredListCampSites.get(row).estimatedCheckOut == null) {
           return "-";
+        }
 
         return (formatter.format(filteredListCampSites.get(row).estimatedCheckOut.
             getTime()));
 
       case 4:
       case 5:
-        if (filteredListCampSites.get(row) instanceof RV)
-          if (col == 4)
+        if (filteredListCampSites.get(row) instanceof RV) {
+          if (col == 4) {
             return (((RV) filteredListCampSites.get(row)).getPower());
-          else
+          } else {
             return "";
-
-        else {
-          if (col == 5)
+          }
+        } else {
+          if (col == 5) {
             return (((TentOnly) filteredListCampSites.get(row)).
                 getNumberOfTenters());
-          else
+          } else {
             return "";
+          }
         }
       default:
         throw new RuntimeException("Row,col out of range: " + row + " " + col);
     }
   }
 
+  /**
+   * Returns the value in the table at a given row and column for the TentRv Screen
+   *
+   * @param row Row in table
+   * @param col Column in table
+   * @return returns the object at that index
+   */
   private Object tentRvScreen(int row, int col) {
     switch (col) {
       case 0:
@@ -326,53 +411,37 @@ public class ListModel extends AbstractTableModel {
         return (formatter.format(filteredListCampSites.get(row).checkIn.getTime()));
 
       case 3:
-        if (filteredListCampSites.get(row).estimatedCheckOut == null)
+        if (filteredListCampSites.get(row).estimatedCheckOut == null) {
           return "-";
-
-        return (formatter.format(filteredListCampSites.get(row).estimatedCheckOut.
-            getTime()));
+        }
+        return (formatter.format(filteredListCampSites.get(row).estimatedCheckOut.getTime()));
 
       case 4:
       case 5:
-        if (filteredListCampSites.get(row) instanceof RV)
-          if (col == 4)
+        if (filteredListCampSites.get(row) instanceof RV) {
+          if (col == 4) {
             return (((RV) filteredListCampSites.get(row)).getPower());
-          else
+          } else {
             return "";
-
-        else {
-          if (col == 5)
+          }
+        } else {
+          if (col == 5) {
             return (((TentOnly) filteredListCampSites.get(row)).
                 getNumberOfTenters());
-          else
+          } else {
             return "";
+          }
         }
       default:
         throw new RuntimeException("Row,col out of range: " + row + " " + col);
     }
   }
 
-  public void add(CampSite a) {
-    listCampSites.add(a);
-    UpdateScreen();
-  }
-
-  public void setRefDate(Date refDate) {
-    this.refDate = refDate;
-  }
-
-  public Date getRefDate() {
-    return refDate;
-  }
-
-  public CampSite get(int i) {
-    return filteredListCampSites.get(i);
-  }
-
-  public void upDate(int index, CampSite unit) {
-    UpdateScreen();
-  }
-
+  /**
+   * Saves current database to a serialized file
+   *
+   * @param filename name of serialized file
+   */
   public void saveDatabase(String filename) {
     try {
       FileOutputStream fos = new FileOutputStream(filename);
@@ -385,11 +454,10 @@ public class ListModel extends AbstractTableModel {
     }
   }
 
-
   /**
-   * guestType, guestName, checkIn, estCheckOut, checkOut, tenters/power
+   * Saves current database to a text file
    *
-   * @param filename name of file being saved
+   * @param filename name of text file
    */
   public void saveTextFile(String filename) {
     try {
@@ -435,6 +503,11 @@ public class ListModel extends AbstractTableModel {
 
   }
 
+  /**
+   * Loads a serialized database file
+   *
+   * @param filename name of database file
+   */
   public void loadDatabase(String filename) {
     listCampSites.clear();
 
@@ -451,9 +524,13 @@ public class ListModel extends AbstractTableModel {
     }
   }
 
+  /**
+   * Loads a text database file
+   *
+   * @param filename name of database file
+   */
   public void loadTextFile(String filename) {
     String line = null;
-
     String[] lineArray;
 
     GregorianCalendar checkIn = new GregorianCalendar();
@@ -510,6 +587,54 @@ public class ListModel extends AbstractTableModel {
     }
   }
 
+  public void add(CampSite a) {
+    listCampSites.add(a);
+    UpdateScreen();
+  }
+
+  public CampSite get(int i) {
+    return filteredListCampSites.get(i);
+  }
+
+  public void setRefDate(Date refDate) {
+    this.refDate = refDate;
+  }
+
+  public Date getRefDate() {
+    return refDate;
+  }
+
+  public void setListCampSites(ArrayList<CampSite> listCampSites) {
+    this.listCampSites = listCampSites;
+  }
+
+  public ArrayList<CampSite> getListCampSites() {
+    return listCampSites;
+  }
+
+  public void setEBreak(Boolean eBreak) {
+    this.eBreak = eBreak;
+  }
+
+  public Boolean getEBreak() {
+    return eBreak;
+  }
+
+  public void setFilteredListCampSites(ArrayList<CampSite> filteredListCampSites) {
+    this.filteredListCampSites = filteredListCampSites;
+  }
+
+  public ArrayList<CampSite> getFilteredListCampSites() {
+    return filteredListCampSites;
+  }
+
+  public void upDate(int index, CampSite unit) {
+    UpdateScreen();
+  }
+
+  /**
+   * Creates the current list of CampSites in the Database
+   */
   public void createList() {
     SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
     GregorianCalendar g1 = new GregorianCalendar();
@@ -564,30 +689,6 @@ public class ListModel extends AbstractTableModel {
     } catch (ParseException e) {
       throw new RuntimeException("Error in testing, creation of list");
     }
-  }
-
-  public ArrayList<CampSite> getListCampSites() {
-    return listCampSites;
-  }
-
-  public void setListCampSites(ArrayList<CampSite> listCampSites) {
-    this.listCampSites = listCampSites;
-  }
-
-  public void setEBreak (Boolean eBreak) {
-    this.eBreak = eBreak;
-  }
-
-  public Boolean getEBreak(){
-    return eBreak;
-  }
-
-  public ArrayList<CampSite> getFilteredListCampSites() {
-    return filteredListCampSites;
-  }
-
-  public void setFilteredListCampSites(ArrayList<CampSite> filteredListCampSites) {
-    this.filteredListCampSites = filteredListCampSites;
   }
 }
 
