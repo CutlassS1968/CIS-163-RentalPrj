@@ -17,7 +17,7 @@ public class ListModel extends AbstractTableModel {
       "Check in Date", "EST. Check out Date ", "Max Power", "Num of Tenters"};
 
   private String[] columnNamesForCheckouts = {"Guest Name", "Est. Cost",
-      "Check in Date", "ACTUAL Check out Date ", " Real Cost"};
+      "Check in Date", "Actual Check out Date ", " Real Cost"};
 
   private String[] columnNamesForOverDue = {"Guest Name", "Est. Cost",
       "Est. Check Out Date", "Days Over Due"};
@@ -89,10 +89,10 @@ public class ListModel extends AbstractTableModel {
         /** Sorting names by using a lambda function */
         Collections.sort(filteredListCampSites,
             (n1, n2) -> {
-          if (n1.getGuestType() != 1 && n2.getGuestType() != 1)
-            return Integer.toString(n1.getGuestType()).compareTo(Integer.toString(n2.getGuestType()));
-          else
-            return n1.getGuestName().compareTo(n2.getGuestName());
+              if (n1.getGuestType() != 1 && n2.getGuestType() != 1)
+                return Integer.toString(n1.getGuestType()).compareTo(Integer.toString(n2.getGuestType()));
+              else
+                return n1.getGuestName().compareTo(n2.getGuestName());
             });
         break;
 
@@ -311,43 +311,43 @@ public class ListModel extends AbstractTableModel {
     }
   }
 
-    private Object tentRvScreen(int row, int col) {
-      switch (col) {
-        case 0:
-          return (filteredListCampSites.get(row).guestName);
+  private Object tentRvScreen(int row, int col) {
+    switch (col) {
+      case 0:
+        return (filteredListCampSites.get(row).guestName);
 
-        case 1:
-          return (filteredListCampSites.get(row).getCost(filteredListCampSites.
-              get(row).estimatedCheckOut));
+      case 1:
+        return (filteredListCampSites.get(row).getCost(filteredListCampSites.
+            get(row).estimatedCheckOut));
 
-        case 2:
-          return (formatter.format(filteredListCampSites.get(row).checkIn.getTime()));
+      case 2:
+        return (formatter.format(filteredListCampSites.get(row).checkIn.getTime()));
 
-        case 3:
-          if (filteredListCampSites.get(row).estimatedCheckOut == null)
-            return "-";
+      case 3:
+        if (filteredListCampSites.get(row).estimatedCheckOut == null)
+          return "-";
 
-          return (formatter.format(filteredListCampSites.get(row).estimatedCheckOut.
-              getTime()));
+        return (formatter.format(filteredListCampSites.get(row).estimatedCheckOut.
+            getTime()));
 
-        case 4:
-        case 5:
-          if (filteredListCampSites.get(row) instanceof RV)
-            if (col == 4)
-              return (((RV) filteredListCampSites.get(row)).getPower());
-            else
-              return "";
+      case 4:
+      case 5:
+        if (filteredListCampSites.get(row) instanceof RV)
+          if (col == 4)
+            return (((RV) filteredListCampSites.get(row)).getPower());
+          else
+            return "";
 
-          else {
-            if (col == 5)
-              return (((TentOnly) filteredListCampSites.get(row)).
-                  getNumberOfTenters());
-            else
-              return "";
-          }
-        default:
-          throw new RuntimeException("Row,col out of range: " + row + " " + col);
-      }
+        else {
+          if (col == 5)
+            return (((TentOnly) filteredListCampSites.get(row)).
+                getNumberOfTenters());
+          else
+            return "";
+        }
+      default:
+        throw new RuntimeException("Row,col out of range: " + row + " " + col);
+    }
   }
 
   public void add(CampSite a) {
@@ -357,6 +357,12 @@ public class ListModel extends AbstractTableModel {
 
   public void setRefDate(Date refDate) {
     this.refDate = refDate;
+  }
+
+  public void isValidDate(Date d) {
+    GregorianCalendar g = new GregorianCalendar(2000, 12, 37);
+    GregorianCalendar r = new GregorianCalendar(2000, 14, 20);
+    GregorianCalendar y = new GregorianCalendar(4041132, 12, 20);
   }
 
   public CampSite get(int i) {
@@ -379,7 +385,13 @@ public class ListModel extends AbstractTableModel {
     }
   }
 
-  public void saveTextFile (String filename) {
+
+  /**
+   * guestType, guestName, checkIn, estCheckOut, checkOut, tenters/power
+   *
+   * @param filename
+   */
+  public void saveTextFile(String filename) {
     try {
 
       FileOutputStream file = new FileOutputStream(filename);
@@ -442,13 +454,16 @@ public class ListModel extends AbstractTableModel {
     }
   }
 
-  public void loadTextFile (String filename) {
+  public void loadTextFile(String filename) {
     String line = null;
 
     String[] lineArray;
-    String[] checkInArray;
-    String[] estCheckOutArray;
-    String[] checkOutArray;
+
+    GregorianCalendar checkIn = new GregorianCalendar();
+    GregorianCalendar estCheckOut = new GregorianCalendar();
+    GregorianCalendar checkOut = new GregorianCalendar();
+
+    SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 
     listCampSites.clear();
 
@@ -458,83 +473,35 @@ public class ListModel extends AbstractTableModel {
       BufferedReader reader = new BufferedReader(file);
 
       while ((line = reader.readLine()) != null) {
+
         lineArray = line.split(", ");
 
-        checkInArray = lineArray[2].split("/");
-        estCheckOutArray = lineArray[3].split("/");
-        checkOutArray = lineArray[4].split("/");
+        checkIn.setTime(df.parse(lineArray[2]));
 
-          if (Integer.parseInt(lineArray[0]) == 0) {    // IF TENTONLY
-            TentOnly temp = new TentOnly();
+        estCheckOut.setTime(df.parse(lineArray[3]));
 
-            temp.setGuestType(Integer.parseInt(lineArray[0])); // Guest Type
+        if (!lineArray[4].contains("null")) {
+          checkOut.setTime(df.parse(lineArray[4]));
+        } else checkOut = null;
 
-            temp.setGuestName(lineArray[1]); // Guest Name
-
-            temp.setCheckIn(new GregorianCalendar( // Check In
-                Integer.parseInt(checkInArray[2]),
-                Integer.parseInt(checkInArray[0]),
-                Integer.parseInt(checkInArray[1])
-            ));
-
-
-            temp.setEstimatedCheckOut(new GregorianCalendar( // Est Check Out
-                Integer.parseInt(estCheckOutArray[2]),
-                Integer.parseInt(estCheckOutArray[0]),
-                Integer.parseInt(estCheckOutArray[1])
-            ));
-
-            if (lineArray[4].contains("null")) {
-              temp.setActualCheckOut(null);
-            } else {
-              temp.setEstimatedCheckOut(new GregorianCalendar( // Check Out
-                  Integer.parseInt(checkOutArray[2]),
-                  Integer.parseInt(checkOutArray[0]),
-                  Integer.parseInt(checkOutArray[1])
-              ));
-            }
-
-            temp.setNumberOfTenters(Integer.parseInt(lineArray[5]));  // Tenters
-
-            add(temp);
-          }
-
-          if (Integer.parseInt(lineArray[0]) == 1) {    // IF RV
-            RV temp = new RV();
-
-
-            temp.setGuestType(Integer.parseInt(lineArray[0])); // Guest Type
-
-            temp.setGuestName(lineArray[1]); // Guest Name
-
-            temp.setCheckIn(new GregorianCalendar( // Check In
-                Integer.parseInt(checkInArray[2]),
-                Integer.parseInt(checkInArray[0]),
-                Integer.parseInt(checkInArray[1])
-            ));
-
-
-            temp.setEstimatedCheckOut(new GregorianCalendar( // Est Check Out
-                Integer.parseInt(estCheckOutArray[2]),
-                Integer.parseInt(estCheckOutArray[0]),
-                Integer.parseInt(estCheckOutArray[1])
-            ));
-
-            if (lineArray[4].contains("null")) {
-              temp.setActualCheckOut(null);
-            } else {
-              temp.setEstimatedCheckOut(new GregorianCalendar( // Check Out
-                  Integer.parseInt(checkOutArray[2]),
-                  Integer.parseInt(checkOutArray[0]),
-                  Integer.parseInt(checkOutArray[1])
-              ));
-            }
-
-            temp.setPower(Integer.parseInt(lineArray[5]));
-
-            add(temp);
-          }
+        if (Integer.parseInt(lineArray[0]) == 0) {
+          TentOnly temp = new TentOnly(lineArray[1], checkIn, estCheckOut, checkOut,
+              Integer.parseInt(lineArray[5]));
+          temp.setNumberOfTenters(Integer.parseInt(lineArray[5]));
+          add(temp);
         }
+
+        if (Integer.parseInt(lineArray[0]) == 1) {
+          RV temp = new RV(lineArray[1], checkIn, estCheckOut, checkOut,
+              Integer.parseInt(lineArray[5]));
+          temp.setPower(Integer.parseInt(lineArray[5]));
+          add(temp);
+        }
+
+        checkOut = new GregorianCalendar();
+        checkIn = new GregorianCalendar();
+        estCheckOut = new GregorianCalendar();
+      }
 
       UpdateScreen();
       reader.close();
@@ -596,6 +563,22 @@ public class ListModel extends AbstractTableModel {
     } catch (ParseException e) {
       throw new RuntimeException("Error in testing, creation of list");
     }
+  }
+
+  public ArrayList<CampSite> getListCampSites() {
+    return listCampSites;
+  }
+
+  public void setListCampSites(ArrayList<CampSite> listCampSites) {
+    this.listCampSites = listCampSites;
+  }
+
+  public ArrayList<CampSite> getFilteredListCampSites() {
+    return filteredListCampSites;
+  }
+
+  public void setFilteredListCampSites(ArrayList<CampSite> filteredListCampSites) {
+    this.filteredListCampSites = filteredListCampSites;
   }
 }
 

@@ -17,6 +17,7 @@ public class OverDueReferenceDialog extends JDialog implements ActionListener {
   private JButton cancelButton;
   private int closeStatus;
   private Date refDate;
+  private SimpleDateFormat dateFormat;
 
   static final int OK = 0;
   static final int CANCEL = 1;
@@ -27,19 +28,23 @@ public class OverDueReferenceDialog extends JDialog implements ActionListener {
 
     setTitle("Input");
     closeStatus = CANCEL;
-    setSize(300,100);
+    setSize(225, 120);
 
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-    DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+    dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
     JPanel textPanel = new JPanel();
-    textPanel.setLayout(new GridLayout(1,3));
-    textPanel.add(new JLabel("Enter Date:"));
-    dateField = new JTextField();
-    textPanel.add(dateField);
+    textPanel.setLayout(new GridLayout(1, 2));
+    textPanel.add(new JLabel("Enter Date (Default is current date) :"));
+//    textPanel.add(new JLabel("(Default is current date)"));
 
-    getContentPane().add(textPanel, BorderLayout.CENTER);
+    JPanel datePanel = new JPanel();
+    dateField = new JTextField(15);
+    datePanel.add(dateField);
+
+    getContentPane().add(textPanel, BorderLayout.NORTH);
+    getContentPane().add(datePanel, BorderLayout.CENTER);
 
     // Instantiate and display two buttons
     okButton = new JButton("OK");
@@ -52,7 +57,7 @@ public class OverDueReferenceDialog extends JDialog implements ActionListener {
     okButton.addActionListener(this);
     cancelButton.addActionListener(this);
 
-    setVisible (true);
+    setVisible(true);
   }
 
   /**************************************************************
@@ -67,21 +72,14 @@ public class OverDueReferenceDialog extends JDialog implements ActionListener {
     if (button == okButton) {
       // save the information in the object
       closeStatus = OK;
-      SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
       GregorianCalendar gTemp = new GregorianCalendar();
       refDate = gTemp.getTime();
 
       try {
-        refDate = df.parse(dateField.getText());
-//        ListModel.setRefDate(refDate);
-
+        refDate = dateFormat.parse(dateField.getText());
       } catch (ParseException e1) {
+        throw new RuntimeException("Illegal date entered");
       }
-
-    }
-
-    if (button == cancelButton) {
-      // TODO: add cancel button; return to previous window
     }
 
     // make the dialog disappear
@@ -98,7 +96,7 @@ public class OverDueReferenceDialog extends JDialog implements ActionListener {
 
    @return an int representing the option OK or CANCEL
    **************************************************************/
-  public int getCloseStatus(){
+  public int getCloseStatus() {
     return closeStatus;
   }
 

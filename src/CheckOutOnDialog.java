@@ -87,6 +87,7 @@ public class CheckOutOnDialog extends JDialog implements ActionListener {
 				campSite.setActualCheckOut(gTemp);
 
 			} catch (ParseException e1) {
+
 			}
 
 		}

@@ -156,8 +156,10 @@ public class GUICampReservationSystem extends JFrame implements ActionListener {
 
     if (overDueItemScn == comp) {
       OverDueReferenceDialog dialog = new OverDueReferenceDialog(this, true);
-      DList.setRefDate(dialog.getRefDate());
-      DList.setDisplay(ScreenDisplay.OverDueGuest);
+      if (dialog.getCloseStatus() == OverDueReferenceDialog.OK) {
+        DList.setRefDate(dialog.getRefDate());
+        DList.setDisplay(ScreenDisplay.OverDueGuest);
+      }
     }
 
     if (sortRvTentItemScn == comp) {
@@ -219,12 +221,14 @@ public class GUICampReservationSystem extends JFrame implements ActionListener {
         CampSite unit = DList.get(index);
         CheckOutOnDialog dialog = new CheckOutOnDialog(this, unit);
 
-        JOptionPane.showMessageDialog(null,
-            "  Be sure to thank " + unit.getGuestName() +
-                "\n for camping with us and the price is:  " +
-                unit.getCost(unit.getActualCheckOut()) +
-                " dollars");
-        DList.upDate(index, unit);
+        if (unit.getActualCheckOut() != null) {
+          JOptionPane.showMessageDialog(null,
+              "  Be sure to thank " + unit.getGuestName() +
+                  "\n for camping with us and the price is:  " +
+                  unit.getCost(unit.getActualCheckOut()) +
+                  " dollars");
+          DList.upDate(index, unit);
+        }
       }
     }
   }

@@ -17,8 +17,9 @@ TODO Step 3:
 TODO Step 4:
     TOTALLY error checked your program (the whole program)
         For Example:
-            - checkOut date was before checkIn date
-            - improper date such as "abc/abc/abc" etc.
+            + checkOut date was before checkIn date
+            + improper date such as "abc/abc/abc" etc.
+     + Make sure that Days Over Due is only showing a date if they have checked out already
 TODO Step 5:
     Use JUnits to test fully your ListModel class
         - Minimal 100% coverage
