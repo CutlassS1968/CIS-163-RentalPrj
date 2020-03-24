@@ -22,10 +22,10 @@ TODO Step 4:
      + Make sure that Days Over Due is only showing a date if they have checked out already
 TODO Step 5:
     Use JUnits to test fully your ListModel class
-        - Minimal 100% coverage
+        + Minimal 100% coverage
 TODO Step 6:
     Comment all of your code, but, use the Java Style Guide on the ListModel
-    - That class will be graded
+    + That class will be graded
 
 
 
