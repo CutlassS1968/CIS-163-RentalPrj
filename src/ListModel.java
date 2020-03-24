@@ -1,6 +1,5 @@
 import javax.swing.table.AbstractTableModel;
 import java.io.*;
-import java.sql.Array;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,10 +13,10 @@ public class ListModel extends AbstractTableModel {
   private ScreenDisplay display;
 
   private String[] columnNamesForCurrentPark = {"Guest Name", "Est. Cost",
-      "Check in Date", "EST. Check out Date ", "Max Power", "Num of Tenters"};
+      "Check In Date", "Est. Check Out Date", "Max Power", "Num. of Tenters"};
 
   private String[] columnNamesForCheckouts = {"Guest Name", "Est. Cost",
-      "Check in Date", "Actual Check out Date ", " Real Cost"};
+      "Check In Date", "Actual Check Out Date", "Real Cost"};
 
   private String[] columnNamesForOverDue = {"Guest Name", "Est. Cost",
       "Est. Check Out Date", "Days Over Due"};
@@ -30,10 +29,13 @@ public class ListModel extends AbstractTableModel {
 
   private Date refDate;
 
+  private Boolean eBreak;
+
   public ListModel() {
     super();
     display = ScreenDisplay.CurrentParkStatus;
     listCampSites = new ArrayList<CampSite>();
+    eBreak = false;
     UpdateScreen();
     createList();
   }
@@ -80,13 +82,12 @@ public class ListModel extends AbstractTableModel {
         filteredListCampSites = (ArrayList<CampSite>) listCampSites.stream().
             filter(n -> n.actualCheckOut == null).collect(Collectors.toList());
 
-        // Alternatively you could use streams to sort the function, which is much easier than
-        // using lambdas or anonymous functions
-        //
+//         Alternatively you could use streams to sort the function, which is much easier than
+//         using lambdas or anonymous functions
+//
 //         filteredListCampSites.stream().sorted(Comparator.comparing(CampSite::getGuestType)
 //         .thenComparing(CampSite::getGuestName));
 
-        /** Sorting names by using a lambda function */
         Collections.sort(filteredListCampSites,
             (n1, n2) -> {
               if (n1.getGuestType() != 1 && n2.getGuestType() != 1)
@@ -100,7 +101,6 @@ public class ListModel extends AbstractTableModel {
         filteredListCampSites = (ArrayList<CampSite>) listCampSites.stream().
             filter(n -> n.actualCheckOut == null).collect(Collectors.toList());
 
-        /** Sorting names by using an anonymous function */
         Collections.sort(filteredListCampSites, new Comparator<CampSite>() {
           @Override
           public int compare(CampSite n1, CampSite n2) {
@@ -155,7 +155,7 @@ public class ListModel extends AbstractTableModel {
       case TentRv:
         return columnNamesForTentRv.length;
     }
-    throw new IllegalArgumentException();
+    throw new RuntimeException("Undefined column count for Display: " + display);
   }
 
   @Override
@@ -177,7 +177,7 @@ public class ListModel extends AbstractTableModel {
       case TentRv:
         return tentRvScreen(row, col);
     }
-    throw new IllegalArgumentException();
+    throw new RuntimeException("Undefined state for Display: " + display);
   }
 
   private Object currentParkScreen(int row, int col) {
@@ -268,8 +268,10 @@ public class ListModel extends AbstractTableModel {
         if (filteredListCampSites.get(row).daysSince(refDate) != 0)
           return filteredListCampSites.get(row).daysSince(refDate) * -1;
         return filteredListCampSites.get(row).daysSince(refDate);
+
+      default:
+        throw new RuntimeException("Row,col out of range: " + row + " " + col);
     }
-    return null;
   }
 
   private Object rvTentScreen(int row, int col) {
@@ -359,10 +361,8 @@ public class ListModel extends AbstractTableModel {
     this.refDate = refDate;
   }
 
-  public void isValidDate(Date d) {
-    GregorianCalendar g = new GregorianCalendar(2000, 12, 37);
-    GregorianCalendar r = new GregorianCalendar(2000, 14, 20);
-    GregorianCalendar y = new GregorianCalendar(4041132, 12, 20);
+  public Date getRefDate() {
+    return refDate;
   }
 
   public CampSite get(int i) {
@@ -389,7 +389,7 @@ public class ListModel extends AbstractTableModel {
   /**
    * guestType, guestName, checkIn, estCheckOut, checkOut, tenters/power
    *
-   * @param filename
+   * @param filename name of file being saved
    */
   public void saveTextFile(String filename) {
     try {
@@ -401,18 +401,15 @@ public class ListModel extends AbstractTableModel {
         writer.write(listCampSites.get(i).getGuestType() + ", ");
         writer.write(listCampSites.get(i).getGuestName() + ", ");
 
-        writer.write(listCampSites.get(i).getCheckIn().get(Calendar.MONTH) + "/" +
-            listCampSites.get(i).getCheckIn().get(Calendar.DAY_OF_MONTH) + "/" +
-            listCampSites.get(i).getCheckIn().get(Calendar.YEAR) + ", ");
+        writer.write(formatter.format(listCampSites.get(i).getCheckIn().getTime()) + ", ");
 
-        writer.write(listCampSites.get(i).getEstimatedCheckOut().get(Calendar.MONTH) + "/" +
-            listCampSites.get(i).getEstimatedCheckOut().get(Calendar.DAY_OF_MONTH) + "/" +
-            listCampSites.get(i).getEstimatedCheckOut().get(Calendar.YEAR) + ", ");
+        writer.write(formatter.format
+            (listCampSites.get(i).getEstimatedCheckOut().getTime()) + "," + " ");
+
 
         if (listCampSites.get(i).getActualCheckOut() != null) {
-          writer.write(listCampSites.get(i).getActualCheckOut().get(Calendar.MONTH) + "/" +
-              listCampSites.get(i).getActualCheckOut().get(Calendar.DAY_OF_MONTH) + "/" +
-              listCampSites.get(i).getActualCheckOut().get(Calendar.YEAR) + ", ");
+          writer.write(formatter.format
+              (listCampSites.get(i).getActualCheckOut().getTime()) + ", ");
         } else {
           writer.write(listCampSites.get(i).getActualCheckOut() + ", ");
         }
@@ -560,6 +557,10 @@ public class ListModel extends AbstractTableModel {
       add(RV22);
       add(RV222);
 
+      if (eBreak) {
+        throw new ParseException("Oops", 0);
+      }
+
     } catch (ParseException e) {
       throw new RuntimeException("Error in testing, creation of list");
     }
@@ -571,6 +572,14 @@ public class ListModel extends AbstractTableModel {
 
   public void setListCampSites(ArrayList<CampSite> listCampSites) {
     this.listCampSites = listCampSites;
+  }
+
+  public void setEBreak (Boolean eBreak) {
+    this.eBreak = eBreak;
+  }
+
+  public Boolean getEBreak(){
+    return eBreak;
   }
 
   public ArrayList<CampSite> getFilteredListCampSites() {

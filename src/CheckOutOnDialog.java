@@ -76,7 +76,7 @@ public class CheckOutOnDialog extends JDialog implements ActionListener {
 		// if OK clicked the fill the object
 		if (button == okButton) {
 			// save the information in the object
-			closeStatus = OK;
+
 			SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 			GregorianCalendar gTemp = new GregorianCalendar();
 
@@ -84,12 +84,13 @@ public class CheckOutOnDialog extends JDialog implements ActionListener {
 			try {
 				d = df.parse(txtDate.getText());
 				gTemp.setTime(d);
-				campSite.setActualCheckOut(gTemp);
+				if (campSite.getCheckIn().getTime().getTime() < gTemp.getTime().getTime()) {
+          campSite.setActualCheckOut(gTemp);
+          closeStatus = OK;
+        }
+				else throw new IllegalArgumentException("Date entered is before check in date!");
 
-			} catch (ParseException e1) {
-
-			}
-
+			} catch (ParseException e1) {}
 		}
 
 		// make the dialog disappear

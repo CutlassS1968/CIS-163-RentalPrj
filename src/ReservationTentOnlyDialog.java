@@ -110,7 +110,7 @@ public class ReservationTentOnlyDialog extends JDialog implements ActionListener
         tentOnly.setEstimatedCheckOut(gregTemp);
 
       } catch (ParseException e1) {
-//                  Do some thing good, what I am not sure.
+        closeStatus = CANCEL;
       }
 
       tentOnly.setGuestName(txtGuestName.getText());

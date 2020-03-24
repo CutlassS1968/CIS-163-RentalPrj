@@ -4,4 +4,5 @@ public enum ScreenDisplay {
   OverDueGuest,
   RvTent,
   TentRv,
+  Oopsie,
 }

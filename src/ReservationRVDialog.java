@@ -111,7 +111,7 @@ public class ReservationRVDialog extends JDialog implements ActionListener {
         rv.setEstimatedCheckOut(gregTemp);
 
       } catch (ParseException e1) {
-//                  Do some thing good, what I am not sure.
+        closeStatus = CANCEL;
       }
 
       rv.setGuestName(txtGuestName.getText());
